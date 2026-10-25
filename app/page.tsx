@@ -1,5 +1,6 @@
 'use client';
 import {useEffect,useMemo,useState} from 'react';
+import type {LucideIcon} from 'lucide-react';
 import {Scale,LayoutDashboard,FolderOpen,Users,ShieldCheck,Settings,Plus,ArrowRight,ArrowLeft,Check,ChevronDown,FileText,UploadCloud,Send,LockKeyhole,Clock,CheckCircle2,XCircle,BriefcaseBusiness,Globe2,Search,Download,Trash2,Bell,Menu,MessageSquare,Eye,AlertCircle,Copy,Building2,CalendarDays,UserRound,LogOut,Info,ClipboardList} from 'lucide-react';
 
 type Role='client'|'lawyer'|'admin';type CaseStatus='Draft'|'Ready to share'|'Awaiting lawyer'|'Accepted'|'Declined';
@@ -15,7 +16,7 @@ const [role,setRole]=useState<Role>('client'),[page,setPage]=useState('Overview'
 useEffect(()=>{try{const saved=localStorage.getItem('casevia-demo-v1');if(saved)setCases(JSON.parse(saved))}catch{}},[]);useEffect(()=>{localStorage.setItem('casevia-demo-v1',JSON.stringify(cases))},[cases]);
 function notify(t:string){setToast(t);setTimeout(()=>setToast(''),3500)}
 const current=cases.find(c=>c.id===selected)||cases[0];const t=(en:string,nl:string)=>language==='EN'?en:nl;
-const nav=role==='client'?[['Overview',LayoutDashboard],['My cases',FolderOpen],['Find a lawyer',Users],['Privacy & consent',ShieldCheck]]:role==='lawyer'?[['Overview',LayoutDashboard],['Case requests',FolderOpen],['My clients',Users],['Profile',UserRound]]:[['Overview',LayoutDashboard],['All cases',FolderOpen],['Lawyer verification',ShieldCheck],['Users & roles',Users],['Audit log',ClipboardList]] as const;
+const nav: Array<[string, LucideIcon]>=role==='client'?[['Overview',LayoutDashboard],['My cases',FolderOpen],['Find a lawyer',Users],['Privacy & consent',ShieldCheck]]:role==='lawyer'?[['Overview',LayoutDashboard],['Case requests',FolderOpen],['My clients',Users],['Profile',UserRound]]:[['Overview',LayoutDashboard],['All cases',FolderOpen],['Lawyer verification',ShieldCheck],['Users & roles',Users],['Audit log',ClipboardList]] as const;
 function navigate(p:string){setPage(p);setMobile(false)}
 function begin(){setDraft({title:'',area:'Housing & tenancy',country:'Netherlands',description:'',answers:{},evidence:[]});setStep(0);setQIndex(0);navigate('New case')}
 function saveDraft(){const id='CV-2026-'+Math.floor(1000+Math.random()*8999);const item:LegalCase={id,title:draft.title||draft.area+' case',area:draft.area,country:draft.country,status:'Ready to share',created:new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}),description:draft.description||draft.answers['What happened?']||'',answers:draft.answers,evidence:draft.evidence,sharedWith:[]};setCases(p=>[item,...p]);setSelected(id);navigate('Case detail');notify('Your case file has been created')}
